@@ -1,0 +1,69 @@
+<!-- Colin Maher
+CMPS 115 Section 2
+2018 Fall 
+Unit test for artist settings
+ -->
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
+<script>
+  function checkData() {
+    db.collection('users').where('userId', '==', 'artist1').get().then(function (user) {
+      console.log("new artist settings: ")
+      console.log(artist)
+      user.forEach(function (data) {
+        console.log("user name in db: " + data.data().name + " and should be " + artist.name)
+        console.log("user name in db: " + data.data().credits + " and should be " + artist.credits)
+        console.log("user name in db: " + data.data().free_credits + " and should be " + artist.free_credits)
+        console.log("user name in db: " + data.data().role + " and should be " + artist.role)
+        console.log("user name in db: " + data.data().instagram + " and should be " + artist.instagram)
+        console.log("user name in db: " + data.data().photoUrl + " and should be " + artist.photoUrl)
+        console.log("user name in db: " + data.data().email + " and should be " + artist.email)
+      })
+
+    }).catch(function (status) {
+      console.log("Error status: " + status)
+    })
+  }
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBtJwHja_PXMh4xotZNbXrpt1ETmlYPHZE",
+    authDomain: "syavuetest.firebaseapp.com",
+    databaseURL: "https://syavuetest.firebaseio.com",
+    projectId: "syavuetest",
+    storageBucket: "syavuetest.appspot.com",
+    messagingSenderId: "227451014720"
+  };
+  firebase.initializeApp(config);
+  const firestore = firebase.firestore();
+  const settings = {
+    timestampsInSnapshots: true
+  };
+  firestore.settings(settings);
+  const artist = {
+    userId: "artist1",
+    name: "not Bob",
+    email: "newemail",
+    free_credits: 1,
+    credits: 2,
+    role: "artist",
+    instagram: "newinsta",
+    photoUrl: "newphoto"
+  }
+  let db = firebase.firestore()
+  db.collection('users').doc(artist.userId).update({
+      name: artist.name,
+      email: artist.email,
+      free_credits: artist.free_credits || 0,
+      credits: artist.credits || 0,
+      role: artist.role,
+      instagram: artist.instagram || 'none',
+      photoUrl: artist.photoUrl || 'none'
+    }).then(function () {
+      console.log('Document successfully updated!')
+      checkData()
+    })
+    .catch(function (error) {
+      console.error('Error writing document: ', error)
+      checkData()
+    })
+
+</script>
