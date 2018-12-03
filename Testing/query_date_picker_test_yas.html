@@ -58,7 +58,7 @@ The content of the document......
         // go through all results
         results.forEach(function (doc) {
             console.log("Printing out results : ")
-            console.log(doc.data().about);
+            console.log(doc.data());
         });
     }
     });
@@ -69,9 +69,9 @@ The content of the document......
     let temp_report = db.collection("users");
     start_Date = '1514678400000' // Dec 31, 2017
     end_Date = '1514678400000' // Dec 31, 2017
-    let business_query_email = 'test@gmail.com';
+    let business_query_email = 'test@gmail.com'
     let query = temp_report
-    .where("businessId.business_email", "==", business_query_email)
+    .where("email", "==", business_query_email)
     .where("replied_date", ">=", start_Date)
     .where("replied_date", "<=", end_Date);
     query.get().then(function (results) {
@@ -92,9 +92,9 @@ The content of the document......
     let temp_report = db.collection("users");
     start_Date = '1514678400000' // Dec 31, 2017
     end_Date = '1546214400000' // Dec 31, 2018
-    let business_query_email = state.query_business_email;
+    let business_query_email = 'test@gmail.com';
     let query = temp_report
-    .where("businessId.business_email", "==", 'test@gmail.com')
+    .where("email", "==", 'test@gmail.com')
     .where("replied_date", ">=", start_Date)
     .where("replied_date", "<=", end_Date);
     query.get().then(function (results) {
