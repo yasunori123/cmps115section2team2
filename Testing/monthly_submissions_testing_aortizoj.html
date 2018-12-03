@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>CMPS115 Testing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+      <script src="main.js"></script>
+    -->
+  </head>
+  <body>
+    <h1>Open Console</h1>
+  </body>
+</html>
+
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBtJwHja_PXMh4xotZNbXrpt1ETmlYPHZE",
+    authDomain: "syavuetest.firebaseapp.com",
+    databaseURL: "https://syavuetest.firebaseio.com",
+    projectId: "syavuetest",
+    storageBucket: "syavuetest.appspot.com",
+    messagingSenderId: "227451014720"
+  };
+  firebase.initializeApp(config);
+
+  const firestore = firebase.firestore();
+  const settings = { /* your settings... */ timestampsInSnapshots: true };
+  firestore.settings(settings);
+</script>
+
+<script>
+  //aortizoj
+  // commit("clear_submissions_for_month_array");
+  function submissions_for_month(epoch_date) {
+    let today = epoch_date;
+    let date = new Date(today);
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    let firstDayOfMonth =
+      year + "-" + month + "-" + "01" + "-" + "00" + "-" + "00" + "-" + "00";
+    let split_firstDayOfMonth = firstDayOfMonth.split("-");
+    let epoch_firstDayOfMonth = new Date(
+      split_firstDayOfMonth[0],
+      split_firstDayOfMonth[1] - 1,
+      split_firstDayOfMonth[2],
+      split_firstDayOfMonth[3],
+      split_firstDayOfMonth[4],
+      split_firstDayOfMonth[5]
+    ).valueOf();
+    let lastDayOfMonth =
+      year +
+      "-" +
+      (month + 1) +
+      "-" +
+      "01" +
+      "-" +
+      "00" +
+      "-" +
+      "00" +
+      "-" +
+      "00";
+    let split_lastDayOfMonth = lastDayOfMonth.split("-");
+    let epoch_lastDayOfMonth = new Date(
+      split_lastDayOfMonth[0],
+      split_lastDayOfMonth[1] - 1,
+      split_lastDayOfMonth[2],
+      split_lastDayOfMonth[3],
+      split_lastDayOfMonth[4],
+      split_lastDayOfMonth[5]
+    ).valueOf();
+
+    let db = firebase.firestore();
+    let temp_report = db.collection("review_requests");
+    let query = temp_report
+      .where("submitted_on", ">", epoch_firstDayOfMonth)
+      .where("submitted_on", "<", epoch_lastDayOfMonth);
+    query
+      .get()
+      .then(function(results) {
+        if (results.empty) {
+          console.log("No documents found!");
+        } else {
+          // go through all results
+          results.forEach(function(doc) {
+            console.log("set_submissions_for_month", doc.data());
+          });
+          // set_replied_requests_for_report
+          // or if you only want the first result you can also do something like this:
+          // console.log("Document data:", results.docs[0].data());
+        }
+      })
+      .catch(function(error) {
+        console.log("Error getting documents:", error);
+      });
+  }
+  submissions_for_month(1529554173000); //june epoch should return sub 9-12
+  submissions_for_month(1515989373000); //january epoch should return sub 1-4
+  submissions_for_month(1519358973000); //february epoch should return sub 5-8
+  submissions_for_month(Date.now()); //today's epoch time which would be in december so will return sub 13-14
+  //january sub 1-4
+  //february sub 5-8
+  //june sub 9-12
+  //december sub 13-14
+</script>
